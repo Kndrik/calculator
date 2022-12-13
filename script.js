@@ -60,6 +60,10 @@ let previousNumber = 0;
 let currentNumber = 0;
 
 function pressNumber(number) {
+    if (String(currentNumber).length > 14) return;
+    if (number === "." && currentNumber.toString().includes(number)) {
+        return;
+    }
     displayValue += number;
     if (currentNumber === 0) {
         currentNumber = "";
@@ -122,15 +126,57 @@ function clear() {
 
 function erase() {
     if (currentNumber !== 0) {
-        currentNumber = +(String(currentNumber).slice(0, String(currentNumber).length-1));
+        currentNumber = (String(currentNumber).slice(0, String(currentNumber).length-1));
         displayValue = displayValue.slice(0, displayValue.length-1);
     } else if (currentOperator !== null) {
         currentOperator = null;
         displayValue = displayValue.slice(0, displayValue.length-3);
-        currentNumber = previousNumber;
+        !displayValue.includes(previousNumber) ? currentNumber = "" : currentNumber = previousNumber;
         previousNumber = 0;
     }
     updateOperationDisplay();
+}
+
+function pressKey(e) {
+    console.log(e.key);
+    const pressedButton = document.querySelector(`button[data-key="${e.key}"`);
+    console.log(pressedButton);
+    if (!pressedButton) return;
+
+    if (pressedButton.classList.contains("erase")) {
+        erase();
+        return;
+    } else if (pressedButton.classList.contains("clear")) {
+        clear();
+        return;
+    }
+
+    if (!pressedButton.classList.contains("operator")) {
+        pressNumber(pressedButton.textContent)
+    } else {
+        switch (pressedButton.textContent) {
+            case "+":
+                pressOperator(Operators.Add);
+            break;
+
+            case "-":
+                pressOperator(Operators.Substract);
+            break;
+
+            case "*":
+                pressOperator(Operators.Multiply);
+            break;
+
+            case "/":
+                pressOperator(Operators.Divide);
+            break;
+
+            case "=":
+                operate(currentOperator, previousNumber, currentNumber);
+                currentOperator = null;
+            break;
+        }
+    }
 }
 
 addEventListeners();
@@ -166,7 +212,10 @@ function addEventListeners() {
                 }
             })
         }
+        button.addEventListener('mouseenter', e => e.target.classList.toggle("highlighted"));
+        button.addEventListener('mouseleave', e => e.target.classList.toggle("highlighted"));
     })
     document.querySelector(".clear").addEventListener('click', (e) => clear());
     document.querySelector(".erase").addEventListener('click', (e) => erase());
+    window.addEventListener('keydown', pressKey);
 }
