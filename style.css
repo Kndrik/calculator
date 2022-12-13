@@ -63,7 +63,7 @@ body {
     box-sizing: border-box;
 }
 
-.row button.highlighted {
+.row button.highlight {
     border-color: rgba(255, 255, 255, 0.623);
 }
 

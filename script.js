@@ -212,8 +212,8 @@ function addEventListeners() {
                 }
             })
         }
-        button.addEventListener('mouseenter', e => e.target.classList.toggle("highlighted"));
-        button.addEventListener('mouseleave', e => e.target.classList.toggle("highlighted"));
+        button.addEventListener('mouseenter', e => e.target.classList.toggle("highlight"));
+        button.addEventListener('mouseleave', e => e.target.classList.toggle("highlight"));
     })
     document.querySelector(".clear").addEventListener('click', (e) => clear());
     document.querySelector(".erase").addEventListener('click', (e) => erase());
