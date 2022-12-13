@@ -18,25 +18,152 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
+    if (a === 0 || b === 0) {
+        return 0;
+    }
     return a / b;
 }
 
 function operate(operator, a, b) {
     switch(operator) {
         case Operators.Add:
-            return add(a, b);
+            resultValue = add(a, b);
         break;
 
         case Operators.Substract:
-            return substract(a, b);
+            resultValue = substract(a, b);
         break;
 
         case Operators.Multiply:
-            return multiply(a, b);
+            resultValue = multiply(a, b);
         break;
 
         case Operators.Divide:
-            return divide(a, b);
+            resultValue = divide(a, b);
+        break;
+
+        default:
+            resultValue = b;
+    }
+    displayValue = "";
+    previousNumber = 0;
+    currentNumber = 0;
+    updateResultDisplay();
+}
+
+let displayValue = "";
+let resultValue = "";
+const operationDisplay = document.querySelector(".operation");
+const resultDisplay = document.querySelector(".result");
+let currentOperator = null;
+let previousNumber = 0;
+let currentNumber = 0;
+
+function pressNumber(number) {
+    displayValue += number;
+    currentNumber = +(currentNumber.toString() + number.toString());
+    updateOperationDisplay();
+}
+
+function pressOperator(operator) {
+    if (currentOperator !== null) {
+        if (currentNumber === "") {
+            currentOperator = operator;
+            displayValue = displayValue.slice(0, displayValue.length-3);
+        } else {
+            operate(currentOperator, previousNumber, currentNumber);
+            currentNumber = 0;
+        }
+    }
+
+    switch(operator) {
+        case Operators.Add:
+            displayValue += " + ";
+        break;
+
+        case Operators.Substract:
+            displayValue += " - ";
+        break;
+
+        case Operators.Multiply:
+            displayValue += " * ";
+        break;
+
+        case Operators.Divide:
+            displayValue += " / ";
         break;
     }
+    currentOperator = operator;
+    currentNumber === 0 ? previousNumber = resultValue : previousNumber = currentNumber;
+    currentNumber = 0;
+    updateOperationDisplay();
+}
+
+function updateOperationDisplay() {
+    operationDisplay.textContent = displayValue;
+}
+
+function updateResultDisplay() {
+    resultDisplay.textContent = resultValue;
+}
+
+function clear() {
+    resultValue = 0;
+    displayValue = "";
+    currentNumber = 0;
+    previousNumber = 0;
+    currentOperator = null;
+    updateOperationDisplay();
+    updateResultDisplay();
+}
+
+function erase() {
+    if (currentNumber !== 0) {
+        currentNumber = +(String(currentNumber).slice(0, String(currentNumber).length-1));
+        displayValue = displayValue.slice(0, displayValue.length-1);
+    } else if (currentOperator !== null) {
+        currentOperator = null;
+        displayValue = displayValue.slice(0, displayValue.length-3);
+        currentNumber = previousNumber;
+        previousNumber = 0;
+    }
+    updateOperationDisplay();
+}
+
+addEventListeners();
+
+function addEventListeners() {
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        if (button.classList.length === 0) {
+            button.addEventListener('click', e => pressNumber(e.target.textContent))
+        } else if (button.classList.contains("operator")) {
+            button.addEventListener('click', e => {
+                switch (e.target.textContent) {
+                    case "+":
+                        pressOperator(Operators.Add);
+                    break;
+
+                    case "-":
+                        pressOperator(Operators.Substract);
+                    break;
+
+                    case "*":
+                        pressOperator(Operators.Multiply);
+                    break;
+
+                    case "/":
+                        pressOperator(Operators.Divide);
+                    break;
+
+                    case "=":
+                        operate(currentOperator, previousNumber, currentNumber);
+                        currentOperator = null;
+                    break;
+                }
+            })
+        }
+    })
+    document.querySelector(".clear").addEventListener('click', (e) => clear());
+    document.querySelector(".erase").addEventListener('click', (e) => erase());
 }
