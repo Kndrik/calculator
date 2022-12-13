@@ -125,13 +125,14 @@ function clear() {
 }
 
 function erase() {
-    if (currentNumber !== 0) {
+    if (currentNumber !== "") {
         currentNumber = (String(currentNumber).slice(0, String(currentNumber).length-1));
         displayValue = displayValue.slice(0, displayValue.length-1);
     } else if (currentOperator !== null) {
         currentOperator = null;
         displayValue = displayValue.slice(0, displayValue.length-3);
-        !displayValue.includes(previousNumber) ? currentNumber = "" : currentNumber = previousNumber;
+        currentNumber = previousNumber;
+        //!displayValue.includes(previousNumber) ? currentNumber = "" : currentNumber = previousNumber;
         previousNumber = 0;
     }
     updateOperationDisplay();
