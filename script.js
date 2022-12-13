@@ -6,22 +6,22 @@ const Operators = {
 }
 
 function add(a, b) {
-    return a + b;
+    return +a + +b;
 }
 
 function substract(a, b) {
-    return a - b;
+    return +a - +b;
 }
 
 function multiply(a, b) {
-    return a * b;
+    return +a * +b;
 }
 
 function divide(a, b) {
     if (a === 0 || b === 0) {
         return 0;
     }
-    return a / b;
+    return +a / +b;
 }
 
 function operate(operator, a, b) {
@@ -61,7 +61,10 @@ let currentNumber = 0;
 
 function pressNumber(number) {
     displayValue += number;
-    currentNumber = +(currentNumber.toString() + number.toString());
+    if (currentNumber === 0) {
+        currentNumber = "";
+    }
+    currentNumber = (currentNumber.toString() + number.toString());
     updateOperationDisplay();
 }
 
